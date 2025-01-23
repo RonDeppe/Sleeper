@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var displayFormat string = "15:04:05"
+
 func main() {
 	beforeSleep := time.Now()
 
@@ -17,9 +19,9 @@ func main() {
 
 	duration := afterSleep.Sub(beforeSleep)
 
-	fmt.Printf("System went to sleep at: %v\n", beforeSleep)
-	fmt.Printf("System woke up at: %v\n", afterSleep)
-	fmt.Printf("Elapsed time: %v\n", duration)
+	_, displayDuration := formatDuration(duration)
+
+	displayTimes(beforeSleep, afterSleep, displayDuration)
 }
 
 func sleep() bool {
@@ -36,3 +38,19 @@ func sleep() bool {
 	return true
 }
 
+func formatDuration(duration time.Duration) (string, string) {
+	hours := int(duration.Hours())
+	minutes := int(duration.Minutes()) % 60
+	seconds := int(duration.Seconds()) % 60
+
+	compact := fmt.Sprintf("%02d%02d%02d", hours, minutes, seconds)
+	display := fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
+
+	return compact, display
+}
+
+func displayTimes(before time.Time, after time.Time, duration string) {
+	fmt.Printf("System went to sleep at: %v\n", before.Format(displayFormat))
+	fmt.Printf("System woke up at: %v\n", after.Format(displayFormat))
+	fmt.Printf("Elapsed time: %s\n", duration)
+}
