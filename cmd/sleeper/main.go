@@ -4,16 +4,19 @@ import (
 	"fmt"
 	"syscall"
 	"time"
+	"github.com/RonDeppe/sleeper/internal/io"
 )
 
 var displayFormat string = "15:04:05"
 
 func main() {
+	write.CreateDB()
+	
 	beforeSleep := time.Now()
 
-	if !sleep() {
-		return
-	}
+	// if !sleep() {
+	// 	return
+	// }
 
 	afterSleep := time.Now()
 
