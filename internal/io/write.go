@@ -1,8 +1,10 @@
 package write
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 var dbPath = filepath.Join(os.Getenv("LOCALAPPDATA"), "sleeper", "data.csv")
@@ -21,6 +23,18 @@ func CreateDB() error {
 	header := "DateBefore,DateAfter,Duration"
 
 	if err := writeLineToFile(dbPath, header); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func AddRecord(before time.Time, after time.Time, duration string) error {
+	format := "20060102150405"
+
+	record := fmt.Sprintf("%s,%s,%s", before.Format(format), after.Format(format), duration)
+
+	if err := writeLineToFile(dbPath, record); err != nil {
 		return err
 	}
 

@@ -4,27 +4,30 @@ import (
 	"fmt"
 	"syscall"
 	"time"
-	"github.com/RonDeppe/sleeper/internal/io"
+
+	write "github.com/RonDeppe/sleeper/internal/io"
 )
 
 var displayFormat string = "15:04:05"
 
 func main() {
 	write.CreateDB()
-	
+
 	beforeSleep := time.Now()
 
-	// if !sleep() {
-	// 	return
-	// }
+	if !sleep() {
+		return
+	}
 
 	afterSleep := time.Now()
 
 	duration := afterSleep.Sub(beforeSleep)
 
-	_, displayDuration := formatDuration(duration)
+	compactDuration, displayDuration := formatDuration(duration)
 
 	displayTimes(beforeSleep, afterSleep, displayDuration)
+
+	write.AddRecord(beforeSleep, afterSleep, compactDuration)
 }
 
 func sleep() bool {
@@ -35,7 +38,7 @@ func sleep() bool {
 	ret, _, err := setSuspendState.Call(0, 0, 0)
 	if ret == 0 {
 		fmt.Printf("Failed to put the system to sleep: %v\n", err)
-		return false;
+		return false
 	}
 
 	return true
